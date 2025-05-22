@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "music-backend",
   "version": "1.0.0",
   "description": "Backend server for music app using Express and Mongoose",

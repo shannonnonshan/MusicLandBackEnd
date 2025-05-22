@@ -18,6 +18,6 @@ app.get('/', (req, res) => {
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB connected');
-    app.listen(port, () => console.log(`Server running on port ${port}`));
+    app.listen(port, () => console.log(`App is running at http://localhost:${port}`));
   })
   .catch(err => console.error('DB connection error:', err));
