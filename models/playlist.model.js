@@ -7,28 +7,18 @@ const PlaylistSchema = new Schema({
     type: String,
     required: true,
   },
-  description: {
-    type: String,
-  },
-  coverImage: {
-    type: String,
-  },
-  songs: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Song', 
-    }
-  ],
+  description: String,
+  coverImage: String,
   deviceId: {
     type: String,
-    required: true, 
+    required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-}, { collection: 'Playlist' });
+}, {
+  collection: 'Playlist',
+  timestamps: true, 
+});
+
 
 const Playlist = model('Playlist', PlaylistSchema);
 
-export { Playlist };
+export default Playlist;
