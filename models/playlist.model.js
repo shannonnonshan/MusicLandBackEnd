@@ -7,9 +7,9 @@ const PlaylistSchema = new Schema({
     type: String,
     required: true,
   },
-  description: String,
   coverImage: String,
-  deviceId: {
+  songs: {type: [String], default: null},
+  createBy: {
     type: String,
     required: true,
   },

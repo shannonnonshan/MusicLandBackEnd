@@ -39,12 +39,6 @@ const SongSchema = new Schema({
     type: String,
     required: false,
   },
-    playlistId: {
-    type: Types.ObjectId,
-    ref: 'Playlist',
-    required: false,
-    default: null
-  },
 }, { collection: 'Song' });
 
 const Song = model('Song', SongSchema);
