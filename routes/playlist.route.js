@@ -1,6 +1,7 @@
 import express from 'express';
 import playlistService from '../services/playlist.service.js';
 import multer from 'multer';
+import Playlist from '../models/playlist.model.js';
 const route = express.Router();
 route.get('/', async (req, res) => {
     
@@ -35,7 +36,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 route.post('/create', upload.single('image'), async function(req, res) {
     const {name, deviceId} = req.body;
-    const image = req.file ? req.file.filename : null;
+    const image = '/uploads/' + req.file.filename;
     console.log('name:', name);
     console.log('deviceId:', deviceId);
     console.log('image file:', req.file);
@@ -52,12 +53,20 @@ route.post('/create', upload.single('image'), async function(req, res) {
         console.error('[Create Playlist Error]', error);
     }
 })
-
-route.get('/detailPlaylist', async function(req, res) {
-    const {id} = req.query;
-    const playlist = await playlistService.getPlaylist(id);
-    res.json(playlist.songs);
+route.get('/getPlaylists', async function(req, res) {
+    const playlist = await Playlist.find().lean();
+    const playlistsWithCount = playlist.map(playlist => {
+        const count = Array.isArray(playlist.songs) ? playlist.songs.length : 0;
+        return { ...playlist, countSong: count };
+    });
+    res.json(playlistsWithCount);
 })
+route.get('/getPlaylistTracks', async function(req, res) {
+    const {playlistId} = req.query;
+    const playlist = await playlistService.getPlaylist(playlistId).lean();
+    res.json(playlist);
+})
+
 
 
 export default route;
