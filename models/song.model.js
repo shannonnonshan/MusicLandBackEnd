@@ -43,4 +43,4 @@ const SongSchema = new Schema({
 
 const Song = model('Song', SongSchema);
 
-export { Song };
+export default Song;
