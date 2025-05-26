@@ -40,7 +40,7 @@ route.post('/create', upload.single('image'), async function(req, res) {
     console.log('deviceId:', deviceId);
     console.log('image file:', req.file);
     const entity = {
-        name,
+        name: name,
         createBy: deviceId,
         coverImage: image
     }

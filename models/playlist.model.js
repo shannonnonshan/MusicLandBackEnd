@@ -8,7 +8,7 @@ const PlaylistSchema = new Schema({
     required: true,
   },
   coverImage: String,
-  songs: {type: [String], default: null},
+  songs: {type: [String], default: []},
   createBy: {
     type: String,
     required: true,
