@@ -17,8 +17,8 @@ route.get('/', async (req, res) => {
         { id: 5, playlistId: 1, title: 'Song E' },
         ];
     const playlistsWithCount = playlists.map(playlist => {
-        const count = songs.filter(song => song.playlistId === playlist.id).length;
-        return { ...playlist, countSong: count };
+    const count = songs.filter(song => song.playlistId === playlist.id).length;
+    return { ...playlist, countSong: count };
     });
     res.json(playlistsWithCount);
 });
@@ -32,13 +32,16 @@ const storage = multer.diskStorage({
     }
   });
   
-  const upload = multer({ storage: storage });
+const upload = multer({ storage: storage });
 route.post('/create', upload.single('image'), async function(req, res) {
-    const {name, description} = req.body;
+    const {name, deviceId} = req.body;
     const image = req.file ? req.file.filename : null;
+    console.log('name:', name);
+    console.log('deviceId:', deviceId);
+    console.log('image file:', req.file);
     const entity = {
         name,
-        description,
+        createBy: deviceId,
         coverImage: image
     }
      try {
@@ -46,6 +49,7 @@ route.post('/create', upload.single('image'), async function(req, res) {
         res.status(201).json({ message: 'Playlist created successfully', data: entity });
     } catch (error) {
         res.status(500).json({ error: 'Something went wrong', details: error.message });
+        console.error('[Create Playlist Error]', error);
     }
 })
 

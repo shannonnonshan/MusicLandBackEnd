@@ -1,7 +1,7 @@
 import Playlist from "../models/playlist.model.js";
 export default {
-    addNewPlaylist(entity){
-        return Playlist.add(entity);
+    async addNewPlaylist(entity){
+    return await Playlist.create(entity);
     },
     getPlaylist(id){
         return Playlist.findById(id);
