@@ -7,6 +7,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
+const HOST = '0.0.0.0';
 app.use(express.static('public'));
 
 app.use(cors());
@@ -18,6 +19,5 @@ app.get('/api', (req, res) => {
 
 
 activate_route_middleware(app);
-app.listen(5000, '0.0.0.0', () => {
-  console.log('Server running on http://192.168.1.6:5000');
-});
+
+app.listen(port,HOST, () => console.log(`App is running at http://localhost:${port}`));
