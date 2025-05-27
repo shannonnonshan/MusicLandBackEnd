@@ -18,5 +18,6 @@ app.get('/api', (req, res) => {
 
 
 activate_route_middleware(app);
-app.listen(port, () => console.log(`App is running at http://localhost:${port}`));
-
+app.listen(5000, '0.0.0.0', () => {
+  console.log('Server running on http://192.168.1.6:5000');
+});

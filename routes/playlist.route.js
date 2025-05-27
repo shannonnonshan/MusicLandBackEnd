@@ -54,7 +54,9 @@ route.post('/create', upload.single('image'), async function(req, res) {
     }
 })
 route.get('/getPlaylists', async function(req, res) {
-    const playlist = await Playlist.find().lean();
+    const {deviceId} = req.query;
+    console.log(deviceId);
+    const playlist = await Playlist.find({createBy: deviceId}).lean();
     const playlistsWithCount = playlist.map(playlist => {
         const count = Array.isArray(playlist.songs) ? playlist.songs.length : 0;
         return { ...playlist, countSong: count };
@@ -65,6 +67,18 @@ route.get('/getPlaylistTracks', async function(req, res) {
     const {playlistId} = req.query;
     const playlist = await playlistService.getPlaylist(playlistId).lean();
     res.json(playlist);
+})
+
+route.post('/addSongToPlaylist', async function(req, res) {
+    const {playlistId, songIds} = req.body;
+     try {
+        await playlistService.addSongToPlaylist(playlistId, songIds);
+        res.status(201).json({ message: 'Add Song to Playlist successfully'});
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong', details: error.message });
+        console.error('[Create Playlist Error]', error);
+    }
+    
 })
 
 
