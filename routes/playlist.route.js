@@ -80,7 +80,17 @@ route.post('/addSongToPlaylist', async function(req, res) {
     }
     
 })
-
+route.post('/deletePlaylist', async function(req, res) {
+    const {playlistId} = req.body;
+     try {
+        await playlistService.deletePlaylist(playlistId);
+        res.status(201).json({ message: 'Delete Playlist successfully'});
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong', details: error.message });
+        console.error('[Create Playlist Error]', error);
+    }
+    
+})
 
 
 export default route;
