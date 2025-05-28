@@ -13,11 +13,44 @@ export default {
     deletePlaylist(id){
         return Playlist.findByIdAndDelete(id);
     },
-    addSongToPlaylist(id, songId){
-         return Playlist.findByIdAndUpdate(
+    addSongToPlaylist(id, songId) {
+        const songIds = Array.isArray(songId) ? songId : [songId];
+
+        return Playlist.findByIdAndUpdate(
             id,
-            { $addToSet: { songs: { $each: songId } } },
+            { $addToSet: { songs: { $each: songIds } } },
             { new: true }
         );
+        },
+
+    removeSongFromPlaylist(id, songId) {
+    return Playlist.findByIdAndUpdate(
+        id,
+        { $pull: { songs: songId } },
+        { new: true }
+    );
+    },
+    async getSuggestions(deviceId,query, limit = 10) {
+    if (!query) return [];
+    try {
+        const suggestions = await Playlist.find({
+        createBy: deviceId, 
+        name: { $regex: query, $options: 'i' }, 
+        })
+        .limit(limit)
+        .select('name coverImage songs')
+        const result = suggestions.map((playlist) => ({
+        ...playlist.toObject(), // hoặc .lean() ở trên thay vì toObject()
+        countSong: playlist.songs.length,
+        }));
+        return result;
+    } catch (error) {
+        console.error('Error while fetching suggestions:', error);
+        return [];
+    }
+        
+    },
+    updatePlaylist(id, entity) {
+        return Playlist.findByIdAndUpdate(id, entity);
     }
 }
