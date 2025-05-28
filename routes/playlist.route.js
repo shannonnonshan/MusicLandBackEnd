@@ -37,9 +37,7 @@ const upload = multer({ storage: storage });
 route.post('/create', upload.single('image'), async function(req, res) {
     const {name, deviceId} = req.body;
     const image = '/uploads/' + req.file.filename;
-    console.log('name:', name);
-    console.log('deviceId:', deviceId);
-    console.log('image file:', req.file);
+
     const entity = {
         name: name,
         createBy: deviceId,
@@ -53,9 +51,23 @@ route.post('/create', upload.single('image'), async function(req, res) {
         console.error('[Create Playlist Error]', error);
     }
 })
+route.post('/update', upload.single('image'), async function(req, res) {
+    const {playlistId, name} = req.body;
+    const image = '/uploads/' + req.file.filename;
+    const entity = {
+        name: name,
+        coverImage: image
+    }
+     try {
+        await playlistService.updatePlaylist(playlistId,entity);
+        res.status(201).json({ message: 'Playlist updated successfully', data: entity });
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong', details: error.message });
+        console.error('[Update Playlist Error]', error);
+    }
+})
 route.get('/getPlaylists', async function(req, res) {
     const {deviceId} = req.query;
-    console.log(deviceId);
     const playlist = await Playlist.find({createBy: deviceId}).lean();
     const playlistsWithCount = playlist.map(playlist => {
         const count = Array.isArray(playlist.songs) ? playlist.songs.length : 0;
@@ -80,6 +92,25 @@ route.post('/addSongToPlaylist', async function(req, res) {
     }
     
 })
+route.post('/deleteSongInPlaylist', async function(req, res) {
+    const {playlistId, songIds} = req.body;
+     try {
+        await playlistService.removeSongFromPlaylist(playlistId, songIds);
+        res.status(201).json({ message: 'Delete Song In Playlist successfully'});
+        console.log('Delete Success')
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong', details: error.message });
+        console.error('[Delete Playlist Error]', error);
+    }
+    
+})
+route.get('/search', async (req, res) => {
+  const { query,limit, deviceId } = req.query;
+  if (!deviceId) return res.status(400).json({ error: 'Missing deviceId' });
+
+  const results = await playlistService.getSuggestions(deviceId, query, limit);
+  res.json(results);
+});
 
 
 
