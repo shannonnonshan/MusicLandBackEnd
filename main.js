@@ -9,8 +9,11 @@ const app = express();
 const port = process.env.PORT || 5000;
 const HOST = '0.0.0.0';
 app.use(express.static('public'));
-
-app.use(cors());
+const corsOptions = {
+  origin: '*', // hoặc chỉ định domain cụ thể nếu muốn bảo mật hơn
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/api', (req, res) => {
